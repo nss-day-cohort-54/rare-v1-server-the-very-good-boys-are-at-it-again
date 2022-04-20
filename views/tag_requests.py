@@ -6,7 +6,7 @@ def get_all_tags():
     """This function will return all tags in list in json format
     """
     with sqlite3.connect('./db.sqlite3') as conn:
-        # convert rowfactory to Row to provide both index-based 
+        # convert rowfactory to Row to provide both index-based
         # and case-insensitive name-based access to columns
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
