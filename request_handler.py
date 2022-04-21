@@ -3,7 +3,6 @@ import json
 
 
 from views import get_all_posts, get_single_post, create_post, delete_post, update_post
-from views.comment_requests import delete_comment
 from views.user import create_user, login_user
 from views import get_all_categories, get_single_category
 from views.user_requests import get_all_users, get_single_user
@@ -120,6 +119,10 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == 'tags':
             new_tag = create_tag(post_body)
             self.wfile.write(f"{new_tag}".encode())
+        if resource == 'comments':
+            new_comment = create_comment(post_body)
+            self.wfile.write(f"{new_comment}".encode())
+
 
 
         self.wfile.write(response.encode())
@@ -139,6 +142,8 @@ class HandleRequests(BaseHTTPRequestHandler):
             success = update_tag(id, post_body)
         if resource == "posts":
             success = update_post(id, post_body)
+        if resource == "comments":
+            success = update_comment(id, post_body)
         # rest of the elif's
         if success:
             self._set_headers(204)
@@ -157,6 +162,8 @@ class HandleRequests(BaseHTTPRequestHandler):
             delete_post(id)
         if resource == "tags":
             delete_tag(id)
+        if resource == "comments":
+            delete_comment(id)
         self.wfile.write("".encode())
 
 def main():

@@ -87,10 +87,10 @@ def update_comment(id, new_comment):
 
         db_cursor.execute("""
         UPDATE comments
-            co.id,
-            co.author_id,
-            co.post_id,
-            co.content         
+            SET
+                author_id = ?,
+                post_id = ?,
+                content = ?         
         WHERE id = ?
         """, (new_comment['author_id'], new_comment['post_id'],
               new_comment['content'], id, ))
