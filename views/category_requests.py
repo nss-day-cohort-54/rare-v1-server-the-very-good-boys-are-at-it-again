@@ -58,3 +58,23 @@ def get_single_category(id):
 
         return json.dumps(category.__dict__)  
     
+def create_category(new_category):
+    with sqlite3.connect("./db.sqlite3") as conn:
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        INSERT INTO Categories
+            ( label, )
+        VALUES
+            ( ?, );
+        """,    (new_category['label'], ))
+
+        # The `lastrowid` property on the cursor will return
+        # the primary key of the last thing that got added to
+        # the database.
+        id = db_cursor.lastrowid
+
+        new_category['id'] = id
+
+
+    return json.dumps(new_category)
