@@ -1,4 +1,5 @@
 class User():
+    """the class for user dictionarys"""
     def __init__(self, id, first_name, last_name, 
     email, bio, username, password, profile_image_url, 
     created_on, active):
