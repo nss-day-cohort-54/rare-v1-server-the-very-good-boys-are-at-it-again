@@ -3,15 +3,15 @@ import json
 
 
 from views import get_all_posts, get_single_post, create_post, delete_post, update_post
+
 from views.user import create_user, login_user
 from views import get_all_categories, get_single_category, create_category, delete_category, update_category
 from views.user_requests import get_all_users, get_single_user
 from views import get_all_comments, get_single_comment, delete_comment, update_comment, create_comment
-from views import get_all_tags
-from views import update_tag
-from views import delete_tag
-from views import create_tag
+from views import get_all_tags, update_tag, delete_tag,create_tag
 from views import get_all_reactions
+from views import get_all_subscriptions, get_single_subscription, delete_subscription, create_subscription
+from views import get_all_demotion_queues, get_single_demotion_queue, delete_demotion_queue, create_demotion_queue
 
 
 
@@ -78,6 +78,7 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = f"{get_single_user(id)}"
                 else:
                     response = f"{get_all_users()}"
+
             if resource == "tags":
                 response = f"{get_all_tags()}"
             if resource == "reactions":
@@ -93,6 +94,18 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = f"{get_single_comment(id)}"
                 else:
                     response = f"{get_all_comments()}"
+            
+            if resource == "subscriptions":
+                if id is not None:
+                    response = f"{get_single_subscription(id)}"
+                else:
+                    response = f"{get_all_subscriptions()}"
+
+            if resource == "demotionqueue":
+                if id is not None:
+                    response = f"{get_single_demotion_queue(id)}"
+                else:
+                    response = f"{get_all_demotion_queues()}"
 
 
         self.wfile.write(f"{response}".encode())
@@ -124,6 +137,12 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == 'comments':
             new_comment = create_comment(post_body)
             self.wfile.write(f"{new_comment}".encode())
+        if resource == 'subscriptions':
+            new_subscription = create_subscription(post_body)
+            self.wfile.write(f"{new_subscription}".encode())
+        if resource == 'demotionqueue':
+            new_demotion_queue = create_demotion_queue(post_body)
+            self.wfile.write(f"{new_demotion_queue}".encode())
 
 
 
@@ -168,8 +187,15 @@ class HandleRequests(BaseHTTPRequestHandler):
             delete_tag(id)
         if resource == "comments":
             delete_comment(id)
+<<<<<<< HEAD
+        if resource == "subscriptions":
+            delete_subscription(id)
+        if resource == "demotionqueue":
+            delete_demotion_queue(id)
+=======
         if resource == "categories":
             delete_category(id)    
+>>>>>>> main
         self.wfile.write("".encode())
 
 def main():
