@@ -1,6 +1,6 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
-from urllib import response
+# from urllib import response
 
 from views import get_all_posts
 from views.user import create_user, login_user
@@ -52,6 +52,8 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
+        """getter functions"""
+
         self._set_headers(200)
         response = {}
         parsed = self.parse_url()
