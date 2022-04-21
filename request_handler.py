@@ -71,7 +71,7 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = f"{get_single_user(id)}"
                 else:
                     response = f"{get_all_users()}"
-        
+
 
         self.wfile.write(f"{response}".encode())
 
