@@ -4,7 +4,7 @@ import json
 
 from views import get_all_posts, get_single_post, create_post, delete_post, update_post
 from views.user import create_user, login_user
-from views import get_all_categories, get_single_category, create_category
+from views import get_all_categories, get_single_category, create_category, delete_category, update_category
 from views.user_requests import get_all_users, get_single_user
 from views import get_all_comments, get_single_comment, delete_comment, update_comment, create_comment
 from views import get_all_tags
@@ -146,6 +146,8 @@ class HandleRequests(BaseHTTPRequestHandler):
             success = update_post(id, post_body)
         if resource == "comments":
             success = update_comment(id, post_body)
+        if resource == "categories":
+            success = update_category(id, post_body)    
         # rest of the elif's
         if success:
             self._set_headers(204)
@@ -166,6 +168,8 @@ class HandleRequests(BaseHTTPRequestHandler):
             delete_tag(id)
         if resource == "comments":
             delete_comment(id)
+        if resource == "categories":
+            delete_category(id)    
         self.wfile.write("".encode())
 
 def main():
