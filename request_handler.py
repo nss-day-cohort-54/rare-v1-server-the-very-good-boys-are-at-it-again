@@ -4,6 +4,7 @@ from urllib import response
 
 from views import get_all_posts
 from views.user import create_user, login_user
+from views import get_all_categories, get_single_category
 from views.user_requests import get_all_users, get_single_user
 
 
@@ -47,9 +48,9 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods',
-                         'GET, POST, PUT, DELETE')
+                        'GET, POST, PUT, DELETE')
         self.send_header('Access-Control-Allow-Headers',
-                         'X-Requested-With, Content-Type, Accept')
+                        'X-Requested-With, Content-Type, Accept')
         self.end_headers()
 
     def do_GET(self):
@@ -69,10 +70,13 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = f"{get_single_user(id)}"
                 else:
                     response = f"{get_all_users()}"
-        
+            if resource == "categories":
+                if id is not None:
+                    response = f"{get_single_category(id)}"
+                else:
+                    response = f"{get_all_categories()}"
 
         self.wfile.write(f"{response}".encode())
-
 
     def do_POST(self):
         """Make a post request to the server"""
@@ -86,6 +90,7 @@ class HandleRequests(BaseHTTPRequestHandler):
             response = login_user(post_body)
         if resource == 'register':
             response = create_user(post_body)
+            
 
         self.wfile.write(response.encode())
 
