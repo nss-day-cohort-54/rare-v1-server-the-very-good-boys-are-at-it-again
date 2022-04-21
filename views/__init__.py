@@ -8,6 +8,12 @@ from .user_requests import get_all_users
 from .user_requests import get_single_user
 from .reaction_requests import get_all_reactions
 from .tag_requests import get_all_tags
+
+from .comment_requests import get_all_comments
+from .comment_requests import get_single_comment
+from .comment_requests import delete_comment
+from .comment_requests import update_comment
+from .comment_requests import create_comment
 from .tag_requests import update_tag
 from .tag_requests import delete_tag
 from .tag_requests import create_tag
