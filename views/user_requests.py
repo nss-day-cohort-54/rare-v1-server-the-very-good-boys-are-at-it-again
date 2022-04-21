@@ -58,7 +58,7 @@ def get_single_user(id):
 
         # Use a ? parameter to inject a variable's value
         # into the SQL statement.
-         # Write the SQL query to get the information you want
+        # Write the SQL query to get the information you want
         db_cursor.execute("""
         SELECT
             u.id,
