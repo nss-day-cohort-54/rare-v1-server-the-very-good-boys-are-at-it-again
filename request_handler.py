@@ -2,7 +2,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 
 
-from views import get_all_posts, get_single_post, create_post, delete_post, update_post
+from views import get_all_posts, get_single_post, create_post, delete_post, update_post, get_posts_by_user_name
 from views.user import create_user, login_user
 from views import get_all_categories, get_single_category
 from views.user_requests import get_all_users, get_single_user
@@ -87,12 +87,19 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = f"{get_single_category(id)}"
                 else:
                     response = f"{get_all_categories()}"
-
             if resource == "comments":
                 if id is not None:
                     response = f"{get_single_comment(id)}"
                 else:
                     response = f"{get_all_comments()}"
+                    
+        elif len(parsed) == 3:
+            ( resource, key, value ) = parsed
+            
+            if key == "user_first_name" and resource == "posts":
+                response = get_posts_by_user_name(value)
+            if key == "user_last_name" and resource == "posts":
+                response = get_posts_by_user_name(value)
 
 
         self.wfile.write(f"{response}".encode())
