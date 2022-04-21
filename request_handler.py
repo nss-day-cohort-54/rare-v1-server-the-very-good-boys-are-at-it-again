@@ -2,12 +2,9 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 from urllib import response
 
-from views.user import create_user, login_user
-<<<<<<< HEAD
 from views import get_all_posts
-=======
+from views.user import create_user, login_user
 from views.user_requests import get_all_users, get_single_user
->>>>>>> main
 
 
 class HandleRequests(BaseHTTPRequestHandler):
