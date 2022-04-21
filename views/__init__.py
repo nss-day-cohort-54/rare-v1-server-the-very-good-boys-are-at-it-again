@@ -14,3 +14,6 @@ from .comment_requests import get_single_comment
 from .comment_requests import delete_comment
 from .comment_requests import update_comment
 from .comment_requests import create_comment
+from .tag_requests import update_tag
+from .tag_requests import delete_tag
+from .tag_requests import create_tag
