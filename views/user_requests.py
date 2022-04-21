@@ -4,6 +4,7 @@ from models import User
 
 
 def get_all_users():
+    """getting all users"""
     # Open a connection to the database
     with sqlite3.connect("./db.sqlite3") as conn:
 

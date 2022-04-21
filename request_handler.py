@@ -53,7 +53,6 @@ class HandleRequests(BaseHTTPRequestHandler):
 
     def do_GET(self):
         """getter functions"""
-
         self._set_headers(200)
         response = {}
         parsed = self.parse_url()
@@ -62,8 +61,6 @@ class HandleRequests(BaseHTTPRequestHandler):
             
             if resource == "posts":
                 response = f"{get_all_posts()}"
-                
-        
 
             if resource == "users":
                 if id is not None:
