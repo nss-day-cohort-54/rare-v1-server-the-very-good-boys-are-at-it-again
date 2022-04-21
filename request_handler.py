@@ -3,7 +3,11 @@ import json
 from urllib import response
 
 from views.user import create_user, login_user
+<<<<<<< HEAD
 from views import get_all_posts
+=======
+from views.user_requests import get_all_users, get_single_user
+>>>>>>> main
 
 
 class HandleRequests(BaseHTTPRequestHandler):
@@ -61,7 +65,17 @@ class HandleRequests(BaseHTTPRequestHandler):
             if resource == "posts":
                 response = f"{get_all_posts()}"
                 
-        self.wfile.write(response.encode())
+        
+
+            if resource == "users":
+                if id is not None:
+                    response = f"{get_single_user(id)}"
+                else:
+                    response = f"{get_all_users()}"
+        
+
+        self.wfile.write(f"{response}".encode())
+
 
     def do_POST(self):
         """Make a post request to the server"""
