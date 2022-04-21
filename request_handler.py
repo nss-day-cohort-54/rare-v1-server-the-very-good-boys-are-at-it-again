@@ -7,6 +7,7 @@ from views.user_requests import get_all_users, get_single_user
 from views import get_all_tags
 from views import update_tag
 from views import delete_tag
+from views import create_tag
 from views import get_all_reactions
 
 
@@ -76,7 +77,6 @@ class HandleRequests(BaseHTTPRequestHandler):
                 response = f"{get_all_tags()}"
             if resource == "reactions":
                 response = f"{get_all_reactions()}"
-
             if resource == "categories":
                 if id is not None:
                     response = f"{get_single_category(id)}"
@@ -93,11 +93,15 @@ class HandleRequests(BaseHTTPRequestHandler):
         response = ''
         resource, _ = self.parse_url()
 
+        new_tag = None
+
         if resource == 'login':
             response = login_user(post_body)
         if resource == 'register':
             response = create_user(post_body)
-            
+        if resource == 'tags':
+            new_tag = create_tag(post_body)
+            self.wfile.write(f"{new_tag}".encode())
 
         self.wfile.write(response.encode())
 
