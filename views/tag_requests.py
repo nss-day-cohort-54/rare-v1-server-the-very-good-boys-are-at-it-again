@@ -16,6 +16,7 @@ def get_all_tags():
             t.id,
             t.label
         FROM tags t
+        ORDER BY label ASC
         """)
 
         tags = []
@@ -28,4 +29,32 @@ def get_all_tags():
 
             tags.append(tag.__dict__)
 
-    return json.dumps(tags)    
+    return json.dumps(tags)
+
+def delete_tag(id):
+    """This function will delete a tag at specific id
+    """
+    with sqlite3.connect('./db.sqlite3') as conn:
+        db_cursor = conn.cursor()
+        db_cursor.execute("""
+        DELETE FROM tags
+        WHERE id = ?
+        """,(id,))
+
+def update_tag(id, new_tag):
+    """This function will edit/update a tag at specific id
+    """
+    with sqlite3.connect('./db.sqlite3') as conn:
+        db_cursor = conn.cursor()
+        db_cursor.execute("""
+        UPDATE tags
+            SET
+                label = ?
+        WHERE id = ?
+        """,(new_tag['label'], id,))
+
+        rows_affected = db_cursor.rowcount
+
+    if rows_affected == 0:
+        return False
+    return True

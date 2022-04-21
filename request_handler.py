@@ -5,6 +5,11 @@ from urllib import response
 from views import get_all_posts
 from views.user import create_user, login_user
 from views.user_requests import get_all_users, get_single_user
+from views import get_all_tags
+from views import update_tag
+from views import delete_tag
+from views import get_all_reactions
+
 
 
 class HandleRequests(BaseHTTPRequestHandler):
@@ -53,22 +58,25 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
+        """Makes a get request to the server
+        """
         self._set_headers(200)
         response = {}
         parsed = self.parse_url()
         if len(parsed) == 2:
             ( resource, id ) = parsed
-            
+
             if resource == "posts":
                 response = f"{get_all_posts()}"
-                
-        
-
             if resource == "users":
                 if id is not None:
                     response = f"{get_single_user(id)}"
                 else:
                     response = f"{get_all_users()}"
+            if resource == "tags":
+                response = f"{get_all_tags()}"
+            if resource == "reactions":
+                response = f"{get_all_reactions()}"
 
 
         self.wfile.write(f"{response}".encode())
@@ -91,12 +99,34 @@ class HandleRequests(BaseHTTPRequestHandler):
 
     def do_PUT(self):
         """Handles PUT requests to the server"""
-        pass
+        content_len = int(self.headers.get('content-length', 0))
+        post_body = self.rfile.read(content_len)
+        post_body = json.loads(post_body)
+
+        # Parse the URL
+        (resource, id) = self.parse_url()
+
+        success = False
+
+        if resource == "tags":
+            success = update_tag(id, post_body)
+        # success has a value or not?
+        if success:
+            self._set_headers(204)
+        else:
+            self._set_headers(404)
+
+        self.wfile.write("".encode())
 
     def do_DELETE(self):
         """Handle DELETE Requests"""
-        pass
+        self._set_headers(204)
 
+        (resource, id) = self.parse_url()
+
+        if resource == "tags":
+            delete_tag(id)
+        self.wfile.write("".encode())
 
 def main():
     """Starts the server on port 8088 using the HandleRequests class
