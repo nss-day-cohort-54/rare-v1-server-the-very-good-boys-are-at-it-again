@@ -1,5 +1,8 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
+from urllib import response
+
+from views import get_all_posts
 from views.user import create_user, login_user
 from views import get_all_categories, get_single_category
 from views.user_requests import get_all_users, get_single_user
@@ -51,42 +54,22 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        """Handle Get requests to the server"""
         self._set_headers(200)
-
         response = {}
-        # Your new console.log() that outputs to the terminal
-        print(self.path)
-
-        # Parse URL and store entire tuple in a variable
         parsed = self.parse_url()
-
-        # Response from parse_url() is a tuple with 2
-        # items in it, which means the request was for
-        # `/animals` or `/animals/2`
         if len(parsed) == 2:
-            (resource, id) = parsed
+            ( resource, id ) = parsed
+            
+            if resource == "posts":
+                response = f"{get_all_posts()}"
+                
+        
 
             if resource == "users":
                 if id is not None:
                     response = f"{get_single_user(id)}"
                 else:
                     response = f"{get_all_users()}"
-        
-
-        self.wfile.write(f"{response}".encode())
-
-        response = {}
-
-        # Parse URL and store entire tuple in a variable
-        parsed = self.parse_url()
-
-        # Response from parse_url() is a tuple with 2
-        # items in it, which means the request was for
-        # `/animals` or `/animals/2`
-        if len(parsed) == 2:
-            ( resource, id ) = parsed
-
             if resource == "categories":
                 if id is not None:
                     response = f"{get_single_category(id)}"
@@ -107,6 +90,7 @@ class HandleRequests(BaseHTTPRequestHandler):
             response = login_user(post_body)
         if resource == 'register':
             response = create_user(post_body)
+            
 
         self.wfile.write(response.encode())
 

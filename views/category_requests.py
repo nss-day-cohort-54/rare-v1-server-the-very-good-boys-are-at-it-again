@@ -4,7 +4,7 @@ from models import Category
 
 def get_all_categories():
     # Open a connection to the database
-    with sqlite3.connect("./kennel.sqlite3") as conn:
+    with sqlite3.connect("./db.sqlite3") as conn:
 
         # Just use these. It's a Black Box.
         conn.row_factory = sqlite3.Row
@@ -14,8 +14,8 @@ def get_all_categories():
         db_cursor.execute("""
         SELECT
             c.id,
-            c.label,
-        FROM Category c 
+            c.label
+        FROM Categories c 
         """)
 
         # Initialize an empty list to hold all animal representations
@@ -40,7 +40,7 @@ def get_all_categories():
     return json.dumps(categories)      
 
 def get_single_category(id):
-    with sqlite3.connect("./kennel.sqlite3") as conn:
+    with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
 
@@ -50,7 +50,7 @@ def get_single_category(id):
         SELECT
             c.id,
             c.label
-        FROM Category c
+        FROM Categories c
         WHERE c.id = ?
         """, ( id, ))
 
