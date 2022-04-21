@@ -1,11 +1,15 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
-from urllib import response
-
 from views import get_all_posts, get_single_post, create_post, delete_post, update_post
 from views.user import create_user, login_user
 from views import get_all_categories, get_single_category
 from views.user_requests import get_all_users, get_single_user
+from views import get_all_tags
+from views import update_tag
+from views import delete_tag
+from views import create_tag
+from views import get_all_reactions
+
 
 
 class HandleRequests(BaseHTTPRequestHandler):
@@ -54,23 +58,28 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
+        """Makes a get request to the server
+        """
         self._set_headers(200)
         response = {}
         parsed = self.parse_url()
         if len(parsed) == 2:
             ( resource, id ) = parsed
-            
+
             if resource == "posts":
                 if id is not None:
                     response = f"{get_single_post(id)}"
                 else:
                     response = f"{get_all_posts()}"
-
             if resource == "users":
                 if id is not None:
                     response = f"{get_single_user(id)}"
                 else:
                     response = f"{get_all_users()}"
+            if resource == "tags":
+                response = f"{get_all_tags()}"
+            if resource == "reactions":
+                response = f"{get_all_reactions()}"
             if resource == "categories":
                 if id is not None:
                     response = f"{get_single_category(id)}"
@@ -86,8 +95,10 @@ class HandleRequests(BaseHTTPRequestHandler):
         post_body = json.loads(self.rfile.read(content_len))
         response = ''
         resource, _ = self.parse_url()
-        
+
         new_post = None
+
+        new_tag = None
 
         if resource == 'login':
             response = login_user(post_body)
@@ -96,24 +107,29 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == 'posts':
             new_post = create_post(post_body)
             self.wfile.write(f"{new_post}".encode())
-            
+        if resource == 'tags':
+            new_tag = create_tag(post_body)
+            self.wfile.write(f"{new_tag}".encode())
+
 
         self.wfile.write(response.encode())
 
     def do_PUT(self):
+        """Handles PUT requests to the server"""
         content_len = int(self.headers.get('content-length', 0))
         post_body = self.rfile.read(content_len)
         post_body = json.loads(post_body)
 
         # Parse the URL
-        (resource, id) = self.parse_url()#possibly needs self.path param
+        (resource, id) = self.parse_url()
 
         success = False
 
+        if resource == "tags":
+            success = update_tag(id, post_body)
         if resource == "posts":
             success = update_post(id, post_body)
         # rest of the elif's
-
         if success:
             self._set_headers(204)
         else:
@@ -122,16 +138,16 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.wfile.write("".encode())
 
     def do_DELETE(self):
-        # Set a 204 response code
+        """Handle DELETE Requests"""
         self._set_headers(204)
-
         # Parse the URL
         (resource, id) = self.parse_url()#possibly needs self.path param
 
         if resource == "posts":
             delete_post(id)
+        if resource == "tags":
+            delete_tag(id)
         self.wfile.write("".encode())
-
 
 def main():
     """Starts the server on port 8088 using the HandleRequests class
