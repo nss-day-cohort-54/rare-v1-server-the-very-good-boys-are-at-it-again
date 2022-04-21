@@ -39,8 +39,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_OPTIONS(self):
-        """Sets the OPTIONS headers
-        """
+        """Sets the OPTIONS headers"""
         self.send_response(200)
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods',
