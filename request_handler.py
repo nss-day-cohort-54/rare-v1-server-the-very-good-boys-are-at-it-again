@@ -1,9 +1,12 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
+
+
 from views import get_all_posts, get_single_post, create_post, delete_post, update_post
 from views.user import create_user, login_user
 from views import get_all_categories, get_single_category, create_category
 from views.user_requests import get_all_users, get_single_user
+from views import get_all_comments, get_single_comment, delete_comment, update_comment, create_comment
 from views import get_all_tags
 from views import update_tag
 from views import delete_tag
@@ -47,8 +50,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_OPTIONS(self):
-        """Sets the OPTIONS headers
-        """
+        """Sets the OPTIONS headers"""
         self.send_response(200)
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods',
@@ -58,8 +60,8 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        """Makes a get request to the server
-        """
+        
+        """Makes a get request to the server """
         self._set_headers(200)
         response = {}
         parsed = self.parse_url()
@@ -85,6 +87,13 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = f"{get_single_category(id)}"
                 else:
                     response = f"{get_all_categories()}"
+
+            if resource == "comments":
+                if id is not None:
+                    response = f"{get_single_comment(id)}"
+                else:
+                    response = f"{get_all_comments()}"
+
 
         self.wfile.write(f"{response}".encode())
 
@@ -112,6 +121,10 @@ class HandleRequests(BaseHTTPRequestHandler):
             self.wfile.write(f"{new_tag}".encode())
         if resource == 'categories':
             response = create_category(post_body)  
+        if resource == 'comments':
+            new_comment = create_comment(post_body)
+            self.wfile.write(f"{new_comment}".encode())
+
 
 
         self.wfile.write(response.encode())
@@ -131,6 +144,8 @@ class HandleRequests(BaseHTTPRequestHandler):
             success = update_tag(id, post_body)
         if resource == "posts":
             success = update_post(id, post_body)
+        if resource == "comments":
+            success = update_comment(id, post_body)
         # rest of the elif's
         if success:
             self._set_headers(204)
@@ -149,6 +164,8 @@ class HandleRequests(BaseHTTPRequestHandler):
             delete_post(id)
         if resource == "tags":
             delete_tag(id)
+        if resource == "comments":
+            delete_comment(id)
         self.wfile.write("".encode())
 
 def main():

@@ -64,9 +64,9 @@ def create_category(new_category):
 
         db_cursor.execute("""
         INSERT INTO Categories
-            ( label, )
+            ( label )
         VALUES
-            ( ?, );
+            ( ? );
         """,    (new_category['label'], ))
 
         # The `lastrowid` property on the cursor will return
