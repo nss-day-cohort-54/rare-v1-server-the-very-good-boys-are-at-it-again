@@ -4,6 +4,7 @@ from models import User
 
 
 def get_all_users():
+    """getting all users"""
     # Open a connection to the database
     with sqlite3.connect("./db.sqlite3") as conn:
 
@@ -52,6 +53,7 @@ def get_all_users():
     return json.dumps(users)
 
 def get_single_user(id):
+    """gets single user"""
     with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
@@ -85,3 +87,13 @@ def get_single_user(id):
                             data['active'])
 
         return json.dumps(user.__dict__)
+
+def delete_user(id):
+    """deletes users"""
+    with sqlite3.connect("./db.sqlite3") as conn:
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        DELETE FROM Users
+        WHERE id = ?
+        """, (id, ))
