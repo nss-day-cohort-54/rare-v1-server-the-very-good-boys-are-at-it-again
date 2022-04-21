@@ -1,6 +1,6 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
-from views import get_all_posts
+from views import get_all_posts, get_single_post, create_post, delete_post, update_post
 from views.user import create_user, login_user
 from views import get_all_categories, get_single_category
 from views.user_requests import get_all_users, get_single_user
@@ -67,7 +67,10 @@ class HandleRequests(BaseHTTPRequestHandler):
             ( resource, id ) = parsed
 
             if resource == "posts":
-                response = f"{get_all_posts()}"
+                if id is not None:
+                    response = f"{get_single_post(id)}"
+                else:
+                    response = f"{get_all_posts()}"
             if resource == "users":
                 if id is not None:
                     response = f"{get_single_user(id)}"
@@ -93,15 +96,21 @@ class HandleRequests(BaseHTTPRequestHandler):
         response = ''
         resource, _ = self.parse_url()
 
+        new_post = None
+
         new_tag = None
 
         if resource == 'login':
             response = login_user(post_body)
         if resource == 'register':
             response = create_user(post_body)
+        if resource == 'posts':
+            new_post = create_post(post_body)
+            self.wfile.write(f"{new_post}".encode())
         if resource == 'tags':
             new_tag = create_tag(post_body)
             self.wfile.write(f"{new_tag}".encode())
+
 
         self.wfile.write(response.encode())
 
@@ -118,7 +127,9 @@ class HandleRequests(BaseHTTPRequestHandler):
 
         if resource == "tags":
             success = update_tag(id, post_body)
-        # success has a value or not?
+        if resource == "posts":
+            success = update_post(id, post_body)
+        # rest of the elif's
         if success:
             self._set_headers(204)
         else:
@@ -129,9 +140,11 @@ class HandleRequests(BaseHTTPRequestHandler):
     def do_DELETE(self):
         """Handle DELETE Requests"""
         self._set_headers(204)
+        # Parse the URL
+        (resource, id) = self.parse_url()#possibly needs self.path param
 
-        (resource, id) = self.parse_url()
-
+        if resource == "posts":
+            delete_post(id)
         if resource == "tags":
             delete_tag(id)
         self.wfile.write("".encode())
