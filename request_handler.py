@@ -2,7 +2,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 from urllib import response
 
-from views import get_all_posts, get_single_post, create_post
+from views import get_all_posts, get_single_post, create_post, delete_post, update_post
 from views.user import create_user, login_user
 from views import get_all_categories, get_single_category
 from views.user_requests import get_all_users, get_single_user
@@ -86,22 +86,51 @@ class HandleRequests(BaseHTTPRequestHandler):
         post_body = json.loads(self.rfile.read(content_len))
         response = ''
         resource, _ = self.parse_url()
+        
+        new_post = None
 
         if resource == 'login':
             response = login_user(post_body)
         if resource == 'register':
             response = create_user(post_body)
+        if resource == 'posts':
+            new_post = create_post(post_body)
+            self.wfile.write(f"{new_post}".encode())
             
 
         self.wfile.write(response.encode())
 
     def do_PUT(self):
-        """Handles PUT requests to the server"""
-        pass
+        content_len = int(self.headers.get('content-length', 0))
+        post_body = self.rfile.read(content_len)
+        post_body = json.loads(post_body)
+
+        # Parse the URL
+        (resource, id) = self.parse_url()#possibly needs self.path param
+
+        success = False
+
+        if resource == "posts":
+            success = update_post(id, post_body)
+        # rest of the elif's
+
+        if success:
+            self._set_headers(204)
+        else:
+            self._set_headers(404)
+
+        self.wfile.write("".encode())
 
     def do_DELETE(self):
-        """Handle DELETE Requests"""
-        pass
+        # Set a 204 response code
+        self._set_headers(204)
+
+        # Parse the URL
+        (resource, id) = self.parse_url()#possibly needs self.path param
+
+        if resource == "posts":
+            delete_post(id)
+        self.wfile.write("".encode())
 
 
 def main():
