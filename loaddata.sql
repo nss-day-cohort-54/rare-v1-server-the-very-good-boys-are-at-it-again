@@ -30,16 +30,6 @@ CREATE TABLE "Subscriptions" (
   FOREIGN KEY(`author_id`) REFERENCES `Users`(`id`)
 );
 
-CREATE TABLE "Posts" (
-  "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-  "user_id" INTEGER,
-  "category_id" INTEGER,
-  "title" varchar,
-  "publication_date" date,
-  "image_url" varchar,
-  "content" varchar,
-  "approved" bit
-);
 
 CREATE TABLE "Comments" (
   "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -88,5 +78,23 @@ INSERT INTO Categories ('label') VALUES ('News');
 INSERT INTO Tags ('label') VALUES ('JavaScript');
 INSERT INTO Reactions ('label', 'image_url') VALUES ('happy', 'https://pngtree.com/so/happy');
 
-INSERT INTO Tags ('label') VALUES ('Python');
-INSERT INTO Tags ('label') VALUES ('SQL');
+
+ALTER TABLE "Posts" (
+ADD  FOREIGN KEY(`user_id`) REFERENCES `Users`(`id`)
+);
+
+DROP TABLE "Posts"
+
+SELECT * FROM Posts
+
+CREATE TABLE "Posts" (
+  "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+  "user_id" INTEGER,
+  "category_id" INTEGER,
+  "title" varchar,
+  "publication_date" date,
+  "image_url" varchar,
+  "content" varchar,
+  "approved" bit,
+  FOREIGN KEY(`user_id`) REFERENCES `Users`(`id`)
+);
