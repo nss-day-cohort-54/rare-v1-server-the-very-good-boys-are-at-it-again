@@ -1,6 +1,6 @@
 import sqlite3
 import json
-from models import Post, User
+from models import Post, User, PostTag, Category
 
 def get_all_posts():
     with sqlite3.connect("./db.sqlite3") as conn:
@@ -26,10 +26,19 @@ def get_all_posts():
             u.password,
             u.profile_image_url,
             u.created_on,
-            u.active
+            u.active,
+            pt.id post_tag_id_new,
+            pt.post_id,
+            pt.tag_id,
+            c.id category_id_new,
+            c.label
         FROM Posts p
         JOIN Users u
             ON u.id = p.user_id
+        JOIN PostTags pt
+            ON p.id = pt.post_id
+        JOIN Categories c
+            ON p.category_id = c.id
         """)
         posts = []
         dataset = db_cursor.fetchall()
@@ -38,7 +47,14 @@ def get_all_posts():
             
             user = User(row['id'], row['first_name'], row['last_name'], row['email'], row['bio'], row['username'], row['password'], row['profile_image_url'], row['created_on'], row['active'])
             
+            postTag = PostTag(row['id'], row['post_id'], row['tag_id'])
+            
+            category = Category(row['id'], row['label'])
+
+            
             post.user = user.__dict__
+            post.postTag = postTag.__dict__
+            post.category = category.__dict__
             posts.append(post.__dict__)
     return json.dumps(posts)
             
@@ -62,6 +78,7 @@ def get_single_post(id):
         
         post = Post(data['id'], data['user_id'], data['category_id'], data['title'], data['publication_date'], data['image_url'], data['content'], data['approved'])
         return json.dumps(post.__dict__)
+    
     
 def get_posts_by_user_id(user_id):
     with sqlite3.connect("./db.sqlite3") as conn:
@@ -105,6 +122,97 @@ def get_posts_by_user_id(user_id):
             posts.append(post.__dict__)
     return json.dumps(posts)
     
+def get_posts_by_tag_id(tag_id):
+    with sqlite3.connect("./db.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+        
+        db_cursor.execute("""
+        SELECT
+            p.id,
+            p.user_id,
+            p.category_id,
+            p.title,
+            p.publication_date,
+            p.image_url,
+            p.content,
+            p.approved,
+            pt.id post_tag_id_new,
+            pt.post_id,
+            pt.tag_id
+        FROM Posts p
+        JOIN PostTags pt
+            ON p.id = pt.post_id
+        WHERE pt.tag_id = ?
+        """, ( tag_id, )) 
+        
+        posts = []
+        dataset = db_cursor.fetchall()
+        for row in dataset:
+            post = Post(row['id'], row['user_id'], row['category_id'], row['title'], row['publication_date'], row['image_url'], row['content'], row['approved'])
+            postTag = PostTag(row['id'], row['post_id'], row['tag_id'])
+            
+            post.postTag = postTag.__dict__
+            posts.append(post.__dict__)
+    return json.dumps(posts)    
+    
+def get_posts_by_category_id(category_id):
+    with sqlite3.connect("./db.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+        
+        db_cursor.execute("""
+        SELECT
+            p.id,
+            p.user_id,
+            p.category_id,
+            p.title,
+            p.publication_date,
+            p.image_url,
+            p.content,
+            p.approved,
+            c.id category_id_new,
+            c.label
+        FROM Posts p
+        JOIN Categories c
+            ON p.category_id = c.id
+        WHERE c.id = ?
+        """, ( category_id, )) 
+        
+        posts = []
+        dataset = db_cursor.fetchall()
+        for row in dataset:
+            post = Post(row['id'], row['user_id'], row['category_id'], row['title'], row['publication_date'], row['image_url'], row['content'], row['approved'])
+            category = Category(row['id'], row['label'])
+            
+            post.category = category.__dict__
+            posts.append(post.__dict__)
+    return json.dumps(posts)    
+    
+def get_posts_by_title(title):
+    with sqlite3.connect("./db.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+        db_cursor.execute("""
+        SELECT
+            p.id,
+            p.user_id,
+            p.category_id,
+            p.title,
+            p.publication_date,
+            p.image_url,
+            p.content,
+            p.approved
+        FROM Posts p
+        WHERE p.title LIKE ?
+        """, ( f"%{title}%", ))
+        posts = []
+        dataset = db_cursor.fetchall()
+        for row in dataset:
+            post = Post(row['id'], row['user_id'], row['category_id'], row['title'], row['publication_date'], row['image_url'], row['content'], row['approved'])
+            posts.append(post.__dict__)
+    return json.dumps(posts)
+
 def create_post(new_post):
     with sqlite3.connect("./db.sqlite3") as conn:
         db_cursor = conn.cursor()
