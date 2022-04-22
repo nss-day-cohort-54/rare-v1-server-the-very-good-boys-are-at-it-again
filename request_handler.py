@@ -2,6 +2,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 
 
+from views import get_all_posts, get_single_post, create_post, delete_post, update_post, get_posts_by_user_id
 from views import get_all_posts, get_single_post, create_post, delete_post, update_post
 
 from views.user import create_user, login_user
@@ -88,13 +89,12 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = f"{get_single_category(id)}"
                 else:
                     response = f"{get_all_categories()}"
-
             if resource == "comments":
                 if id is not None:
                     response = f"{get_single_comment(id)}"
                 else:
                     response = f"{get_all_comments()}"
-            
+                    
             if resource == "subscriptions":
                 if id is not None:
                     response = f"{get_single_subscription(id)}"
@@ -106,9 +106,17 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = f"{get_single_demotion_queue(id)}"
                 else:
                     response = f"{get_all_demotion_queues()}"
+                    
+        elif len(parsed) == 3:
+            ( resource, key, value ) = parsed
+            
+            if key == "user_id" and resource == "posts":
+                response = get_posts_by_user_id(value)
+            
 
 
         self.wfile.write(f"{response}".encode())
+
 
     def do_POST(self):
         """Make a post request to the server"""
@@ -187,15 +195,12 @@ class HandleRequests(BaseHTTPRequestHandler):
             delete_tag(id)
         if resource == "comments":
             delete_comment(id)
-<<<<<<< HEAD
         if resource == "subscriptions":
             delete_subscription(id)
         if resource == "demotionqueue":
             delete_demotion_queue(id)
-=======
         if resource == "categories":
             delete_category(id)    
->>>>>>> main
         self.wfile.write("".encode())
 
 def main():
