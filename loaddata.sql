@@ -102,3 +102,5 @@ CREATE TABLE "Posts" (
 INSERT INTO Posts ('user_id', 'category_id', 'title', 'publication_date', 'image_url', 'content', 'approved') VALUES (1, 1, 'Test', '1', '1', '1', 1);
 
 DELETE FROM Categories WHERE "id" = 1
+
+INSERT INTO PostTags ('post_id', 'tag_id') VALUES (1, 1);

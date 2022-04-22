@@ -2,8 +2,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 
 
-from views import get_all_posts, get_single_post, create_post, delete_post, update_post, get_posts_by_user_id
-from views import get_all_posts, get_single_post, create_post, delete_post, update_post
+from views import get_all_posts, get_single_post, create_post, delete_post, update_post, get_posts_by_user_id, get_posts_by_title, get_posts_by_tag_id, get_posts_by_category_id
 
 from views.user import create_user, login_user
 from views import get_all_categories, get_single_category, create_category, delete_category, update_category
@@ -112,6 +111,12 @@ class HandleRequests(BaseHTTPRequestHandler):
             
             if key == "user_id" and resource == "posts":
                 response = get_posts_by_user_id(value)
+            if key == "q" and resource == "posts":
+                response = get_posts_by_title(value)
+            if key == "tag_id" and resource == "posts":
+                response = get_posts_by_tag_id(value)
+            if key == "category_id" and resource == "posts":
+                response = get_posts_by_category_id(value)
             
 
 

@@ -6,3 +6,4 @@ from .reaction import Reaction
 from .comment import Comment
 from .subscription import Subscription
 from .demotion_que import DemotionQueue
+from .post_tag import PostTag
