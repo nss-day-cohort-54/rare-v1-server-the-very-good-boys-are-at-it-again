@@ -18,8 +18,15 @@ def get_all_posts():
             p.content,
             p.approved,
             u.id user_id_new,
-            u.first_name user_first_name,
-            u.last_name user_last_name
+            u.first_name,
+            u.last_name,
+            u.email,
+            u.bio,
+            u.username,
+            u.password,
+            u.profile_image_url,
+            u.created_on,
+            u.active
         FROM Posts p
         JOIN Users u
             ON u.id = p.user_id
@@ -29,9 +36,9 @@ def get_all_posts():
         for row in dataset:
             post = Post(row['id'], row['user_id'], row['category_id'], row['title'], row['publication_date'], row['image_url'], row['content'], row['approved'])
             
-            users = User(row['id'], row['first_name'], row['last_name'], row['email'], row['bio'], row['username'], row['password'], row['profile_image_url'], row['created_on'], row['active'])
+            user = User(row['id'], row['first_name'], row['last_name'], row['email'], row['bio'], row['username'], row['password'], row['profile_image_url'], row['created_on'], row['active'])
             
-            posts.users = users.__dict__
+            post.user = user.__dict__
             posts.append(post.__dict__)
     return json.dumps(posts)
             
@@ -56,7 +63,7 @@ def get_single_post(id):
         post = Post(data['id'], data['user_id'], data['category_id'], data['title'], data['publication_date'], data['image_url'], data['content'], data['approved'])
         return json.dumps(post.__dict__)
     
-def get_posts_by_user_name(first_name, last_name):
+def get_posts_by_user_id(user_id):
     with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
@@ -73,12 +80,19 @@ def get_posts_by_user_name(first_name, last_name):
             p.approved,
             u.id user_id_new,
             u.first_name,
-            u.last_name
+            u.last_name,
+            u.email,
+            u.bio,
+            u.username,
+            u.password,
+            u.profile_image_url,
+            u.created_on,
+            u.active
         FROM Posts p
         JOIN Users u
             ON u.id = p.user_id
-        WHERE u.first_name LIKE ? AND u.last_name LIKE ?
-        """, (f"%{first_name}%", f"%{last_name}%", )) 
+        WHERE p.user_id = ?
+        """, ( user_id, )) 
         
         posts = []
         dataset = db_cursor.fetchall()

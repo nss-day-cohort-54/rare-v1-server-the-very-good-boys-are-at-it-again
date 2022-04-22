@@ -98,3 +98,7 @@ CREATE TABLE "Posts" (
   "approved" bit,
   FOREIGN KEY(`user_id`) REFERENCES `Users`(`id`)
 );
+
+INSERT INTO Posts ('user_id', 'category_id', 'title', 'publication_date', 'image_url', 'content', 'approved') VALUES (1, 1, 'Test', '1', '1', '1', 1);
+
+DELETE FROM Categories WHERE "id" = 1

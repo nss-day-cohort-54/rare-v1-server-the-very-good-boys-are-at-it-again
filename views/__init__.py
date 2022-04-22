@@ -8,23 +8,17 @@ from .post_requests import get_single_post
 from .post_requests import create_post
 from .post_requests import delete_post
 from .post_requests import update_post
-<<<<<<< HEAD
-from .post_requests import get_posts_by_user_name
-=======
+from .post_requests import get_posts_by_user_id
 
 
->>>>>>> main
 from .user_requests import get_all_users
 from .user_requests import get_single_user
 
 
 from .reaction_requests import get_all_reactions
-<<<<<<< HEAD
 from .tag_requests import get_all_tags
-=======
 
 
->>>>>>> main
 from .comment_requests import get_all_comments
 from .comment_requests import get_single_comment
 from .comment_requests import delete_comment

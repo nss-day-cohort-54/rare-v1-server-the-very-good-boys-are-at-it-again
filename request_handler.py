@@ -2,12 +2,9 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 
 
-<<<<<<< HEAD
-from views import get_all_posts, get_single_post, create_post, delete_post, update_post, get_posts_by_user_name
-=======
+from views import get_all_posts, get_single_post, create_post, delete_post, update_post, get_posts_by_user_id
 from views import get_all_posts, get_single_post, create_post, delete_post, update_post
 
->>>>>>> main
 from views.user import create_user, login_user
 from views import get_all_categories, get_single_category, create_category, delete_category, update_category
 from views.user_requests import get_all_users, get_single_user
@@ -97,17 +94,7 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = f"{get_single_comment(id)}"
                 else:
                     response = f"{get_all_comments()}"
-<<<<<<< HEAD
                     
-        elif len(parsed) == 3:
-            ( resource, key, value ) = parsed
-            
-            if key == "user_first_name" and resource == "posts":
-                response = get_posts_by_user_name(value)
-            if key == "user_last_name" and resource == "posts":
-                response = get_posts_by_user_name(value)
-=======
-            
             if resource == "subscriptions":
                 if id is not None:
                     response = f"{get_single_subscription(id)}"
@@ -119,10 +106,17 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = f"{get_single_demotion_queue(id)}"
                 else:
                     response = f"{get_all_demotion_queues()}"
->>>>>>> main
+                    
+        elif len(parsed) == 3:
+            ( resource, key, value ) = parsed
+            
+            if key == "user_id" and resource == "posts":
+                response = get_posts_by_user_id(value)
+            
 
 
         self.wfile.write(f"{response}".encode())
+
 
     def do_POST(self):
         """Make a post request to the server"""
@@ -201,15 +195,12 @@ class HandleRequests(BaseHTTPRequestHandler):
             delete_tag(id)
         if resource == "comments":
             delete_comment(id)
-<<<<<<< HEAD
         if resource == "subscriptions":
             delete_subscription(id)
         if resource == "demotionqueue":
             delete_demotion_queue(id)
-=======
         if resource == "categories":
             delete_category(id)    
->>>>>>> main
         self.wfile.write("".encode())
 
 def main():
