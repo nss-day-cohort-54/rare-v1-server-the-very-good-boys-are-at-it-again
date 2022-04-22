@@ -187,15 +187,12 @@ class HandleRequests(BaseHTTPRequestHandler):
             delete_tag(id)
         if resource == "comments":
             delete_comment(id)
-<<<<<<< HEAD
         if resource == "subscriptions":
             delete_subscription(id)
         if resource == "demotionqueue":
             delete_demotion_queue(id)
-=======
         if resource == "categories":
             delete_category(id)    
->>>>>>> main
         self.wfile.write("".encode())
 
 def main():
