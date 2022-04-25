@@ -103,4 +103,50 @@ INSERT INTO Posts ('user_id', 'category_id', 'title', 'publication_date', 'image
 
 DELETE FROM Categories WHERE "id" = 1
 
-INSERT INTO PostTags ('post_id', 'tag_id') VALUES (1, 1);
+INSERT INTO PostTags ('post_id', 'tag_id') VALUES (2, 1);
+
+SELECT
+            p.id,
+            p.user_id,
+            p.category_id,
+            p.title,
+            p.publication_date,
+            p.image_url,
+            p.content,
+            p.approved,
+            u.id user_id_new,
+            u.first_name,
+            u.last_name,
+            u.email,
+            u.bio,
+            u.username,
+            u.password,
+            u.profile_image_url,
+            u.created_on,
+            u.active,
+            pt.id post_tag_id_new,
+            pt.post_id,
+            pt.tag_id,
+            c.id category_id_new,
+            c.label
+        FROM Posts p
+        JOIN Users u
+            ON u.id = p.user_id
+        LEFT OUTER JOIN PostTags pt
+            ON p.id = pt.post_id
+        JOIN Categories c
+            ON p.category_id = c.id
+
+
+INSERT INTO Categories ('id', 'label') VALUES (1, 'Test');
+
+INSERT INTO Posts ('user_id', 'category_id', 'title', 'publication_date', 'image_url', 'content', 'approved') VALUES (1, 1, 'Test', '1', '1', '1', 1);
+
+SELECT * FROM Posts p JOIN Users u
+            ON u.id = p.user_id
+        JOIN PostTags pt
+            ON p.id = pt.post_id
+        JOIN Categories c
+            ON p.category_id = c.id
+
+INSERT INTO PostTags ('id', 'label') VALUES (1, 'Test');

@@ -1,5 +1,8 @@
+from collections import UserString
+
+
 class Post():
-    def __init__(self, id, user_id, category_id, title, publication_date, image_url, content, approved):
+    def __init__(self, id, user_id, category_id, title, publication_date, image_url, content, approved, users = None, postTags = None, categories = None):
         self.id = id
         self.user_id = user_id
         self.category_id = category_id
@@ -8,3 +11,6 @@ class Post():
         self.image_url = image_url
         self.content = content
         self.approved = approved
+        self.users = users
+        self.postTags = postTags
+        self.categories = categories
