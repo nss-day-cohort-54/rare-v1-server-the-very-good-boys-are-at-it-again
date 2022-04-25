@@ -33,6 +33,7 @@ from .tag_requests import update_tag
 from .tag_requests import delete_tag
 from .tag_requests import create_tag
 from .tag_requests import get_all_tags
+from .tag_requests import get_single_tag
 
 from .subscription_requests import get_all_subscriptions
 from .subscription_requests import get_single_subscription

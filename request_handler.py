@@ -3,12 +3,11 @@ import json
 
 
 from views import get_all_posts, get_single_post, create_post, delete_post, update_post, get_posts_by_user_id, get_posts_by_title, get_posts_by_tag_id, get_posts_by_category_id
-
 from views.user import create_user, login_user
 from views import get_all_categories, get_single_category, create_category, delete_category, update_category
 from views.user_requests import get_all_users, get_single_user
 from views import get_all_comments, get_single_comment, delete_comment, update_comment, create_comment
-from views import get_all_tags, update_tag, delete_tag, create_tag
+from views import get_all_tags, get_single_tag, update_tag, delete_tag, create_tag
 from views import get_all_reactions
 from views import get_all_subscriptions, get_single_subscription, delete_subscription, create_subscription
 from views import get_all_demotion_queues, get_single_demotion_queue, delete_demotion_queue, create_demotion_queue
@@ -78,7 +77,10 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = f"{get_all_users()}"
 
             if resource == "tags":
-                response = f"{get_all_tags()}"
+                if id is not None:
+                    response = f"{get_single_tag(id)}"
+                else :
+                    response = f"{get_all_tags()}"
             if resource == "reactions":
                 response = f"{get_all_reactions()}"
             if resource == "categories":

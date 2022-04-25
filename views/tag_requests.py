@@ -31,6 +31,26 @@ def get_all_tags():
 
     return json.dumps(tags)
 
+def get_single_tag(id):
+    """This function will return a single row from tags table based on id
+    """
+    with sqlite3.connect('./db.sqlite3') as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+        db_cursor.execute("""
+        SELECT
+            t.id,
+            t.label
+        FROM tags t
+        WHERE id = ?
+        """, (id,))
+
+        data = db_cursor.fetchone()
+
+        tag = Tag(data['id'], data['label'],)
+
+        return json.dumps(tag.__dict__)
+
 def delete_tag(id):
     """This function will delete a tag at specific id
     """
