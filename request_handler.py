@@ -8,11 +8,10 @@ from views.user import create_user, login_user
 from views import get_all_categories, get_single_category, create_category, delete_category, update_category
 from views.user_requests import get_all_users, get_single_user
 from views import get_all_comments, get_single_comment, delete_comment, update_comment, create_comment
-from views import get_all_tags, update_tag, delete_tag,create_tag
+from views import get_all_tags, update_tag, delete_tag, create_tag
 from views import get_all_reactions
 from views import get_all_subscriptions, get_single_subscription, delete_subscription, create_subscription
 from views import get_all_demotion_queues, get_single_demotion_queue, delete_demotion_queue, create_demotion_queue
-
 
 
 class HandleRequests(BaseHTTPRequestHandler):
@@ -54,19 +53,18 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods',
-                        'GET, POST, PUT, DELETE')
+                         'GET, POST, PUT, DELETE')
         self.send_header('Access-Control-Allow-Headers',
-                        'X-Requested-With, Content-Type, Accept')
+                         'X-Requested-With, Content-Type, Accept')
         self.end_headers()
 
     def do_GET(self):
-        
         """Makes a get request to the server """
         self._set_headers(200)
         response = {}
         parsed = self.parse_url()
         if len(parsed) == 2:
-            ( resource, id ) = parsed
+            (resource, id) = parsed
 
             if resource == "posts":
                 if id is not None:
@@ -93,7 +91,7 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = f"{get_single_comment(id)}"
                 else:
                     response = f"{get_all_comments()}"
-                    
+
             if resource == "subscriptions":
                 if id is not None:
                     response = f"{get_single_subscription(id)}"
@@ -105,10 +103,10 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response = f"{get_single_demotion_queue(id)}"
                 else:
                     response = f"{get_all_demotion_queues()}"
-                    
+
         elif len(parsed) == 3:
-            ( resource, key, value ) = parsed
-            
+            (resource, key, value) = parsed
+
             if key == "user_id" and resource == "posts":
                 response = get_posts_by_user_id(value)
             if key == "q" and resource == "posts":
@@ -117,11 +115,8 @@ class HandleRequests(BaseHTTPRequestHandler):
                 response = get_posts_by_tag_id(value)
             if key == "category_id" and resource == "posts":
                 response = get_posts_by_category_id(value)
-            
-
 
         self.wfile.write(f"{response}".encode())
-
 
     def do_POST(self):
         """Make a post request to the server"""
@@ -146,7 +141,7 @@ class HandleRequests(BaseHTTPRequestHandler):
             new_tag = create_tag(post_body)
             self.wfile.write(f"{new_tag}".encode())
         if resource == 'categories':
-            response = create_category(post_body)  
+            response = create_category(post_body)
         if resource == 'comments':
             new_comment = create_comment(post_body)
             self.wfile.write(f"{new_comment}".encode())
@@ -156,8 +151,6 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == 'demotionqueue':
             new_demotion_queue = create_demotion_queue(post_body)
             self.wfile.write(f"{new_demotion_queue}".encode())
-
-
 
         self.wfile.write(response.encode())
 
@@ -179,7 +172,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == "comments":
             success = update_comment(id, post_body)
         if resource == "categories":
-            success = update_category(id, post_body)    
+            success = update_category(id, post_body)
         # rest of the elif's
         if success:
             self._set_headers(204)
@@ -192,7 +185,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         """Handle DELETE Requests"""
         self._set_headers(204)
         # Parse the URL
-        (resource, id) = self.parse_url()#possibly needs self.path param
+        (resource, id) = self.parse_url()  # possibly needs self.path param
 
         if resource == "posts":
             delete_post(id)
@@ -205,8 +198,9 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == "demotionqueue":
             delete_demotion_queue(id)
         if resource == "categories":
-            delete_category(id)    
+            delete_category(id)
         self.wfile.write("".encode())
+
 
 def main():
     """Starts the server on port 8088 using the HandleRequests class
